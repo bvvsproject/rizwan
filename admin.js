@@ -159,24 +159,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Toggle Video Source
-    const sourceRadios = document.querySelectorAll('input[name="vid-source"]');
-    if(sourceRadios.length > 0) {
-        sourceRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                if(e.target.value === 'youtube') {
-                    document.getElementById('vid-file-group').style.display = 'none';
-                    document.getElementById('vid-file').required = false;
-                    document.getElementById('vid-url-group').style.display = 'block';
-                    document.getElementById('vid-youtube-url').required = true;
-                } else {
-                    document.getElementById('vid-file-group').style.display = 'block';
-                    document.getElementById('vid-file').required = true;
-                    document.getElementById('vid-url-group').style.display = 'none';
-                    document.getElementById('vid-youtube-url').required = false;
-                }
-            });
-        });
+    // Google Drive URL Converter
+    function convertDriveLink(url) {
+        const match = url.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+            return `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+        return url;
     }
 
     // 6. Upload Form Submission
@@ -190,41 +179,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             const title = document.getElementById('vid-title').value;
             const category = document.getElementById('vid-category').value;
             const description = document.getElementById('vid-desc').value;
-            const source = document.querySelector('input[name="vid-source"]:checked').value;
-            const thumbFile = document.getElementById('vid-thumb').files[0];
+            const rawVideoUrl = document.getElementById('vid-drive-url').value;
+            const thumbUrlData = document.getElementById('vid-thumb-url').value;
 
             btn.disabled = true;
             status.style.color = "var(--text-secondary)";
-            status.innerText = "Uploading thumbnail...";
+            status.innerText = "Processing links...";
 
             try {
-                // Upload Thumbnail
-                const thumbExt = thumbFile.name.split('.').pop();
-                const thumbName = `${Date.now()}_thumb.${thumbExt}`;
-                const { data: thumbData, error: thumbError } = await supabaseClient.storage
-                    .from('thumbnails')
-                    .upload(thumbName, thumbFile);
-                if (thumbError) throw thumbError;
-                const { data: thumbUrlData } = supabaseClient.storage.from('thumbnails').getPublicUrl(thumbName);
-
-                // Upload Video
-                let finalVideoUrl = "";
-                
-                if (source === 'upload') {
-                    const videoFile = document.getElementById('vid-file').files[0];
-                    status.innerText = "Uploading video... (this may take a while)";
-                    const vidExt = videoFile.name.split('.').pop();
-                    const vidName = `${Date.now()}_video.${vidExt}`;
-                    const { data: vidData, error: vidError } = await supabaseClient.storage
-                        .from('videos')
-                        .upload(vidName, videoFile);
-                    if (vidError) throw vidError;
-                    const { data: vidUrlData } = supabaseClient.storage.from('videos').getPublicUrl(vidName);
-                    finalVideoUrl = vidUrlData.publicUrl;
-                } else {
-                    finalVideoUrl = document.getElementById('vid-youtube-url').value;
-                    status.innerText = "Saving to database...";
-                }
+                // Convert Google Drive Link
+                const finalVideoUrl = convertDriveLink(rawVideoUrl);
 
                 // Save to Database
                 status.innerText = "Saving to database...";
@@ -235,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         category,
                         description,
                         video_url: finalVideoUrl,
-                        thumbnail_url: thumbUrlData.publicUrl
+                        thumbnail_url: thumbUrlData
                     }]);
                 
                 if (dbError) throw dbError;

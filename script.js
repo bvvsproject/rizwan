@@ -215,16 +215,19 @@ window.openVideo = function(url) {
     const modal = document.getElementById('video-modal');
     const container = document.getElementById('video-container');
     
-    // Check if YouTube or direct MP4
+    // Check if YouTube, Google Drive, or direct MP4
     if(url.includes('youtube.com') || url.includes('youtu.be')) {
         let videoId = url.split('v=')[1];
         if(!videoId) videoId = url.split('youtu.be/')[1];
-        const ampersandPosition = videoId.indexOf('&');
-        if(ampersandPosition !== -1) videoId = videoId.substring(0, ampersandPosition);
-        
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        if(videoId) {
+            const ampersandPosition = videoId.indexOf('&');
+            if(ampersandPosition !== -1) videoId = videoId.substring(0, ampersandPosition);
+            container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        }
+    } else if (url.includes('drive.google.com')) {
+        container.innerHTML = `<iframe src="${url}" frameborder="0" allow="autoplay" allowfullscreen style="width:100%; height:100%; border:none; border-radius: 12px;"></iframe>`;
     } else {
-        container.innerHTML = `<video src="${url}" controls autoplay playsinline style="width:100%; height:100%; outline:none;"></video>`;
+        container.innerHTML = `<video src="${url}" controls autoplay playsinline style="width:100%; height:100%; outline:none; border-radius: 12px;"></video>`;
     }
     
     modal.classList.add('active');
