@@ -177,11 +177,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Google Drive URL Converter
+    // Google Drive URL Converter for Videos
     function convertDriveLink(url) {
+        if (!url) return url;
         const match = url.match(/\/d\/(.*?)\//);
         if (match && match[1]) {
             return `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+        return url;
+    }
+
+    // Google Drive URL Converter for Images
+    function convertDriveImageLink(url) {
+        if (!url || !url.includes('drive.google.com')) return url;
+        const match = url.match(/\/d\/(.*?)\//);
+        if (match && match[1]) {
+            return `https://drive.google.com/uc?export=view&id=${match[1]}`;
         }
         return url;
     }
@@ -205,8 +216,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             status.innerText = "Processing links...";
 
             try {
-                // Convert Google Drive Link
+                // Convert Google Drive Links
                 const finalVideoUrl = convertDriveLink(rawVideoUrl);
+                const finalThumbUrl = convertDriveImageLink(thumbUrlData);
 
                 // Save to Database
                 status.innerText = "Saving to database...";
@@ -217,7 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         category,
                         description,
                         video_url: finalVideoUrl,
-                        thumbnail_url: thumbUrlData
+                        thumbnail_url: finalThumbUrl
                     }]);
                 
                 if (dbError) throw dbError;
@@ -332,10 +344,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             status.innerText = "Saving offer...";
 
             try {
+                const rawImageUrl = document.getElementById('off-image').value;
+                const finalImageUrl = convertDriveImageLink(rawImageUrl);
+
                 const { error } = await supabaseClient.from('offers').insert([{
                     title: document.getElementById('off-title').value,
                     description: document.getElementById('off-desc').value,
-                    image_url: document.getElementById('off-image').value,
+                    image_url: finalImageUrl,
                     status: document.getElementById('off-status').value
                 }]);
                 
