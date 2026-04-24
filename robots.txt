@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /supabase.js
+Disallow: /admin.js
+
+Sitemap: https://nexusai.agency/sitemap.xml

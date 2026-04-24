@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | NexusAI</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Login Screen (Visible by default, hidden if authenticated) -->
+    <div class="login-container" id="login-screen" style="display: flex;">
+        <div class="bg-glow"></div>
+        <div class="login-box">
+            <h2 style="text-align: center; margin-bottom: 2rem;" id="form-title">Admin <span class="gradient-text-accent">Login</span></h2>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <input type="email" id="login-email" class="form-control" placeholder="Admin Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" class="form-control" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;" id="login-btn">Secure Login</button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" id="toggle-signup" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;">Create new admin account</a>
+                </div>
+                <p id="login-error" style="color: #ef4444; margin-top: 1rem; text-align: center; display: none;"></p>
+                <p id="login-success" style="color: #22c55e; margin-top: 1rem; text-align: center; display: none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default, shown if authenticated) -->
+    <div class="admin-layout" id="dashboard-screen" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="logo">
+                <i class='bx bx-hive gradient-text-accent'></i>
+                <span>Nexus<span class="gradient-text-accent">Admin</span></span>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active" data-view="overview"><i class='bx bxs-dashboard'></i> Overview</a></li>
+                <li><a href="#" data-view="videos"><i class='bx bxs-video'></i> Manage Videos</a></li>
+                <li><a href="#" data-view="services"><i class='bx bxs-briefcase'></i> Services</a></li>
+                <li><a href="#" data-view="enquiries"><i class='bx bxs-message-dots'></i> Enquiries</a></li>
+                <li><a href="#" data-view="testimonials"><i class='bx bxs-star'></i> Testimonials</a></li>
+            </ul>
+            
+            <div style="margin-top: auto;">
+                <button id="logout-btn" class="btn btn-secondary" style="width: 100%;"><i class='bx bx-log-out'></i> Logout</button>
+                <a href="index.html" style="display:block; text-align:center; margin-top:1rem; color:var(--text-secondary); text-decoration:none; font-size:0.9rem;">Back to Website</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Overview View -->
+            <div id="view-overview" class="admin-view">
+                <h2 style="margin-bottom: 2rem;">Dashboard <span class="gradient-text-accent">Overview</span></h2>
+                
+                <div class="stats-container" style="padding: 2rem 0; background: transparent; border: none;">
+                    <div class="admin-card" style="flex: 1; text-align: center;">
+                        <div class="stat-number" id="stat-videos">0</div>
+                        <div class="stat-label">Total Videos</div>
+                    </div>
+                    <div class="admin-card" style="flex: 1; text-align: center;">
+                        <div class="stat-number" id="stat-enquiries">0</div>
+                        <div class="stat-label">Total Enquiries</div>
+                    </div>
+                    <div class="admin-card" style="flex: 1; text-align: center;">
+                        <div class="stat-number" id="stat-services">0</div>
+                        <div class="stat-label">Active Services</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Videos View -->
+            <div id="view-videos" class="admin-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Manage <span class="gradient-text-accent">Videos</span></h2>
+                    <button class="btn btn-primary" id="open-video-modal-btn"><i class='bx bx-plus'></i> Add Video</button>
+                </div>
+                
+                <div class="admin-card">
+                    <div style="overflow-x: auto;">
+                        <table id="admin-videos-table">
+                            <thead>
+                                <tr>
+                                    <th>Thumbnail</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services View -->
+            <div id="view-services" class="admin-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Manage <span class="gradient-text-accent">Services</span></h2>
+                    <button class="btn btn-primary" id="open-service-modal-btn"><i class='bx bx-plus'></i> Add Service</button>
+                </div>
+                <div class="admin-card">
+                    <div style="overflow-x: auto;">
+                        <table id="admin-services-table">
+                            <thead>
+                                <tr>
+                                    <th>Icon</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enquiries View -->
+            <div id="view-enquiries" class="admin-view" style="display: none;">
+                <h2 style="margin-bottom: 2rem;">Client <span class="gradient-text-accent">Enquiries</span></h2>
+                <div class="admin-card">
+                    <div style="overflow-x: auto;">
+                        <table id="admin-enquiries-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Service</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonials View -->
+            <div id="view-testimonials" class="admin-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Manage <span class="gradient-text-accent">Testimonials</span></h2>
+                    <button class="btn btn-primary" id="open-test-modal-btn"><i class='bx bx-plus'></i> Add Testimonial</button>
+                </div>
+                <div class="admin-card">
+                    <div style="overflow-x: auto;">
+                        <table id="admin-testimonials-table">
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Rating</th>
+                                    <th>Review</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Video Modal -->
+    <div class="modal" id="add-video-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="admin-card" style="margin: 0;">
+                <button class="close-modal" id="close-add-video" style="top: 10px; right: 20px;">&times;</button>
+                <h3 style="margin-bottom: 1.5rem;">Upload New Video</h3>
+                <form id="upload-video-form">
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Video Title</label>
+                        <input type="text" id="vid-title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Category</label>
+                        <select id="vid-category" class="form-control" style="background: rgba(0,0,0,0.8);" required>
+                            <option value="YouTube Editing">YouTube Editing</option>
+                            <option value="Reels">Reels</option>
+                            <option value="Ads">Ads</option>
+                            <option value="AI Projects">AI Projects</option>
+                            <option value="Website Projects">Website Projects</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Description</label>
+                        <textarea id="vid-desc" class="form-control" style="min-height: 80px;" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Video File (MP4)</label>
+                        <input type="file" id="vid-file" accept="video/mp4,video/x-m4v,video/*" class="form-control" style="padding: 0.5rem;" required>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text-secondary);">Thumbnail Image</label>
+                        <input type="file" id="vid-thumb" accept="image/*" class="form-control" style="padding: 0.5rem;" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="upload-vid-submit-btn" style="width: 100%;">Upload to Supabase</button>
+                    <p id="upload-status" style="margin-top: 1rem; text-align: center; color: var(--accent-blue);"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Scripts -->
+    <script src="supabase.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

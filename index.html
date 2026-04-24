@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium AI & Digital Marketing Agency</title>
+    <meta name="description" content="Premium websites, AI/ML solutions, video editing, branding and online growth services for modern businesses.">
+    <meta name="keywords" content="Digital Marketing, AI Development, Machine Learning, Video Editing, Website Development, SEO">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    
+    <!-- Boxicons for Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <!-- Background Glows -->
+    <div class="bg-glow"></div>
+    <div class="bg-glow-2"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">
+            <i class='bx bx-hive gradient-text-accent'></i>
+            <span>Nexus<span class="gradient-text-accent">AI</span></span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#home">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="index.html#services">Services</a></li>
+            <li><a href="index.html#portfolio">Portfolio</a></li>
+            <li><a href="index.html#testimonials">Testimonials</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <a href="#contact" class="btn btn-primary">Let's Talk</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <h1 data-aos="fade-up" data-aos-duration="1000">
+            We Grow Your Business with <br>
+            <span class="gradient-text-accent" id="typing-text"></span>
+            <span class="cursor">|</span>
+        </h1>
+        <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+            Premium websites, AI/ML solutions, video editing, branding and online growth services for modern businesses.
+        </p>
+        <div class="hero-btns" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+            <a href="#contact" class="btn btn-primary">Book Free Consultation</a>
+            <a href="#portfolio" class="btn btn-secondary">View Portfolio</a>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-container">
+        <div class="stat-box" data-aos="fade-up">
+            <div class="stat-number" data-target="500">0</div>
+            <div class="stat-label">Projects Delivered</div>
+        </div>
+        <div class="stat-box" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-number" data-target="200">0</div>
+            <div class="stat-label">Happy Clients</div>
+        </div>
+        <div class="stat-box" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-number" data-target="95">0</div>
+            <div class="stat-label">Success Rate (%)</div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <h2 class="section-title" data-aos="fade-up">Our Premium <span class="gradient-text-accent">Services</span></h2>
+        
+        <div class="services-grid" id="services-grid">
+            <!-- Services dynamically loaded from Supabase via script.js -->
+            <!-- Fallback static content for preview -->
+            <div class="service-card" data-aos="fade-up">
+                <i class='bx bx-trending-up service-icon'></i>
+                <h3>Digital Marketing</h3>
+                <p>SEO Optimization, Google Ads, Meta Ads, and Social Media Marketing.</p>
+            </div>
+            <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                <i class='bx bx-brain service-icon'></i>
+                <h3>AI / ML Development</h3>
+                <p>Prediction Systems, Chatbots, Automation Tools, and Data Dashboards.</p>
+            </div>
+            <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                <i class='bx bx-code-alt service-icon'></i>
+                <h3>Website Development</h3>
+                <p>Static & Dynamic Websites, E-commerce, built for conversion.</p>
+            </div>
+            <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                <i class='bx bx-video service-icon'></i>
+                <h3>Video Editing</h3>
+                <p>YouTube Edits, Instagram Reels, Ads Creation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio">
+        <h2 class="section-title" data-aos="fade-up">Featured <span class="gradient-text-accent">Work</span></h2>
+        
+        <div class="portfolio-filters" data-aos="fade-up">
+            <button class="filter-btn active" data-filter="All">All</button>
+            <button class="filter-btn" data-filter="YouTube Editing">YouTube</button>
+            <button class="filter-btn" data-filter="Reels">Reels</button>
+            <button class="filter-btn" data-filter="Ads">Ads</button>
+            <button class="filter-btn" data-filter="AI Projects">AI/ML</button>
+            <button class="filter-btn" data-filter="Website Projects">Web Dev</button>
+        </div>
+
+        <div class="portfolio-grid" id="portfolio-grid">
+            <!-- Videos loaded dynamically via Supabase -->
+            <p style="text-align:center; width:100%; color:var(--text-secondary);">Loading portfolio items...</p>
+        </div>
+    </section>
+
+    <!-- Video Modal -->
+    <div class="modal" id="video-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="video-container" id="video-container">
+                <!-- Video player injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <h2 class="section-title" data-aos="fade-up">Client <span class="gradient-text-accent">Success Stories</span></h2>
+        
+        <!-- Swiper -->
+        <div class="swiper mySwiper" data-aos="fade-up">
+            <div class="swiper-wrapper" id="testimonials-wrapper">
+                <!-- Testimonials loaded from Supabase -->
+                <div class="swiper-slide">
+                    <div class="testimonial-card">
+                        <div class="stars">★★★★★</div>
+                        <p>"NexusAI completely transformed our online presence. The video editing and marketing strategies brought in 3x more leads!"</p>
+                        <h4 style="margin-top: 1rem;" class="gradient-text-accent">- Sarah Jenkins, CEO</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title" data-aos="fade-up">Ready to <span class="gradient-text-accent">Scale?</span></h2>
+        
+        <div class="contact-container">
+            <div class="contact-info" data-aos="fade-right">
+                <div class="info-item">
+                    <div class="info-icon"><i class='bx bxl-whatsapp'></i></div>
+                    <div>
+                        <h4>WhatsApp</h4>
+                        <p>+1 (555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class='bx bx-envelope'></i></div>
+                    <div>
+                        <h4>Email</h4>
+                        <p>hello@nexusai.agency</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class='bx bx-map'></i></div>
+                    <div>
+                        <h4>Location</h4>
+                        <p>Tech Hub, Silicon Valley, CA</p>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contact-form" data-aos="fade-left">
+                <div class="form-group">
+                    <input type="text" id="name" class="form-control" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="phone" class="form-control" placeholder="Phone Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" class="form-control" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <select id="service" class="form-control" required style="background: rgba(0,0,0,0.8);">
+                        <option value="" disabled selected>Select Service Required</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                        <option value="AI / ML Development">AI / ML Development</option>
+                        <option value="Website Development">Website Development</option>
+                        <option value="Video Editing">Video Editing</option>
+                        <option value="Design & Branding">Design & Branding</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" class="form-control" placeholder="Tell us about your project..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Request & Chat on WhatsApp</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Floating Actions -->
+    <div class="floating-actions">
+        <a href="https://wa.me/15551234567" target="_blank" class="floating-btn btn-whatsapp" title="Chat on WhatsApp">
+            <i class='bx bxl-whatsapp'></i>
+        </a>
+        <a href="tel:+15551234567" class="floating-btn btn-call" title="Call Us">
+            <i class='bx bx-phone-call'></i>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 NexusAI Agency. All Rights Reserved. | <a href="admin.html" style="color:var(--text-secondary); text-decoration:none;">Admin Login</a></p>
+    </footer>
+
+    <!-- Supabase SDK -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="supabase.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
