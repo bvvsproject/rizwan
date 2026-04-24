@@ -1,8 +1,8 @@
 // supabase.js
 
 // IMPORTANT: Replace these with your actual Supabase project URL and Anon Key
-const SUPABASE_URL = 'https://imuonxpbhvccclqdqvzt.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltdW9ueHBiaHZjY2xxZHFvdnp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMzk4NDQsImV4cCI6MjA5MjYxNTg0NH0.SxOMIVAtsspIHWZ4YhPviuPKLUdHFGtHibmL43cs-_U';
+const SUPABASE_URL = 'https://owzehxahvpfwgrvwwsir.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93emVoeGFodnBmd2dydnd3c2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNDg0OTEsImV4cCI6MjA5MjYyNDQ5MX0.dUrnmBKzlwis7INz9HhDr_KP3nCTEkHU7GUaikxAXG4';
 
 // Initialize Supabase Client
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
