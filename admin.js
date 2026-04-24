@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dashboardScreen = document.getElementById('dashboard-screen');
     
     // Quick check if supabase is initialized properly
-    if(!supabase) {
-        alert("Supabase not initialized. Check supabase.js");
+    if(!supabaseClient) {
+        alert("Supabase not initialized. Check supabaseClient.js");
         return;
     }
 
@@ -51,12 +51,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 let authResponse;
                 if (isSignUp) {
-                    authResponse = await supabase.auth.signUp({
+                    authResponse = await supabaseClient.auth.signUp({
                         email,
                         password
                     });
                 } else {
-                    authResponse = await supabase.auth.signInWithPassword({
+                    authResponse = await supabaseClient.auth.signInWithPassword({
                         email,
                         password
                     });
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoutBtn = document.getElementById('logout-btn');
     if(logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.reload();
         });
     }
@@ -181,21 +181,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Upload Thumbnail
                 const thumbExt = thumbFile.name.split('.').pop();
                 const thumbName = `${Date.now()}_thumb.${thumbExt}`;
-                const { data: thumbData, error: thumbError } = await supabase.storage
+                const { data: thumbData, error: thumbError } = await supabaseClient.storage
                     .from('thumbnails')
                     .upload(thumbName, thumbFile);
                 if (thumbError) throw thumbError;
-                const { data: thumbUrlData } = supabase.storage.from('thumbnails').getPublicUrl(thumbName);
+                const { data: thumbUrlData } = supabaseClient.storage.from('thumbnails').getPublicUrl(thumbName);
 
                 // Upload Video
                 status.innerText = "Uploading video... (this may take a while)";
                 const vidExt = videoFile.name.split('.').pop();
                 const vidName = `${Date.now()}_video.${vidExt}`;
-                const { data: vidData, error: vidError } = await supabase.storage
+                const { data: vidData, error: vidError } = await supabaseClient.storage
                     .from('videos')
                     .upload(vidName, videoFile);
                 if (vidError) throw vidError;
-                const { data: vidUrlData } = supabase.storage.from('videos').getPublicUrl(vidName);
+                const { data: vidUrlData } = supabaseClient.storage.from('videos').getPublicUrl(vidName);
 
                 // Save to Database
                 status.innerText = "Saving to database...";
@@ -242,9 +242,9 @@ function showDashboard() {
 
 // Stats loader
 async function loadStats() {
-    const { count: vCount } = await supabase.from('videos').select('*', { count: 'exact', head: true });
-    const { count: eCount } = await supabase.from('enquiries').select('*', { count: 'exact', head: true });
-    const { count: sCount } = await supabase.from('services').select('*', { count: 'exact', head: true });
+    const { count: vCount } = await supabaseClient.from('videos').select('*', { count: 'exact', head: true });
+    const { count: eCount } = await supabaseClient.from('enquiries').select('*', { count: 'exact', head: true });
+    const { count: sCount } = await supabaseClient.from('services').select('*', { count: 'exact', head: true });
     
     if(document.getElementById('stat-videos')) document.getElementById('stat-videos').innerText = vCount || 0;
     if(document.getElementById('stat-enquiries')) document.getElementById('stat-enquiries').innerText = eCount || 0;
@@ -256,7 +256,7 @@ async function loadAdminVideos() {
     const tbody = document.querySelector('#admin-videos-table tbody');
     tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
     
-    const { data, error } = await supabase.from('videos').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('videos').select('*').order('created_at', { ascending: false });
     
     if(error || !data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No videos found</td></tr>';
@@ -282,7 +282,7 @@ async function loadAdminVideos() {
 // Delete logic
 window.deleteVideo = async function(id) {
     if(confirm('Are you sure you want to delete this video? Note: File in storage must be deleted manually from Supabase dashboard for complete removal in this minimal setup.')) {
-        const { error } = await supabase.from('videos').delete().eq('id', id);
+        const { error } = await supabaseClient.from('videos').delete().eq('id', id);
         if(error) alert('Error: ' + error.message);
         else {
             loadAdminVideos();
@@ -296,7 +296,7 @@ async function loadAdminServices() {
     const tbody = document.querySelector('#admin-services-table tbody');
     tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
     
-    const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
+    const { data, error } = await supabaseClient.from('services').select('*').order('created_at', { ascending: true });
     
     if(error || !data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No services found</td></tr>';
@@ -320,7 +320,7 @@ async function loadAdminServices() {
 
 window.deleteService = async function(id) {
     if(confirm('Delete this service?')) {
-        const { error } = await supabase.from('services').delete().eq('id', id);
+        const { error } = await supabaseClient.from('services').delete().eq('id', id);
         if(!error) { loadAdminServices(); loadStats(); }
     }
 }
@@ -330,7 +330,7 @@ async function loadAdminEnquiries() {
     const tbody = document.querySelector('#admin-enquiries-table tbody');
     tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
     
-    const { data, error } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('enquiries').select('*').order('created_at', { ascending: false });
     
     if(error || !data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No enquiries found</td></tr>';
@@ -356,7 +356,7 @@ async function loadAdminTestimonials() {
     const tbody = document.querySelector('#admin-testimonials-table tbody');
     tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
     
-    const { data, error } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('testimonials').select('*').order('created_at', { ascending: false });
     
     if(error || !data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No testimonials found</td></tr>';
@@ -382,7 +382,7 @@ async function loadAdminTestimonials() {
 
 window.deleteTestimonial = async function(id) {
     if(confirm('Delete this testimonial?')) {
-        const { error } = await supabase.from('testimonials').delete().eq('id', id);
+        const { error } = await supabaseClient.from('testimonials').delete().eq('id', id);
         if(!error) loadAdminTestimonials();
     }
 }

@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load Services
 async function loadServices() {
-    const { data, error } = await supabase.from('services').select('*').order('created_at', { ascending: true });
+    const { data, error } = await supabaseClient.from('services').select('*').order('created_at', { ascending: true });
     if(error || !data || data.length === 0) return; // keep static fallback if empty/error
 
     const grid = document.getElementById('services-grid');
@@ -154,7 +154,7 @@ async function loadServices() {
 // Load Portfolio Videos
 let allVideos = [];
 async function loadPortfolio() {
-    const { data, error } = await supabase.from('videos').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('videos').select('*').order('created_at', { ascending: false });
     const grid = document.getElementById('portfolio-grid');
     
     if(error || !data || data.length === 0) {
@@ -232,7 +232,7 @@ window.openVideo = function(url) {
 
 // Load Testimonials
 async function loadTestimonials() {
-    const { data, error } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('testimonials').select('*').order('created_at', { ascending: false });
     if(error || !data || data.length === 0) return; // fallback to static HTML
 
     const wrapper = document.getElementById('testimonials-wrapper');
