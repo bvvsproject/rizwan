@@ -66,10 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(box);
     });
 
-    // Load Services & Portfolio from Supabase
+    // Load Services, Portfolio, Testimonials, Offers from Supabase
     loadServices();
     loadPortfolio();
     loadTestimonials();
+    loadOffers();
 
     // Contact Form Submission
     const contactForm = document.getElementById('contact-form');
@@ -133,11 +134,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load Services
 async function loadServices() {
-    const { data, error } = await supabaseClient.from('services').select('*').order('created_at', { ascending: true });
-    if(error || !data || data.length === 0) return; // keep static fallback if empty/error
-
     const grid = document.getElementById('services-grid');
-    grid.innerHTML = ''; // clear fallback
+    const { data, error } = await supabaseClient.from('services').select('*').order('created_at', { ascending: true });
+    
+    if(error || !data || data.length === 0) {
+        grid.innerHTML = '<p style="text-align:center; width:100%; color:var(--text-secondary);">No services available at the moment.</p>';
+        return;
+    }
+
+    grid.innerHTML = '';
     
     data.forEach((service, index) => {
         const delay = index * 100;
@@ -235,10 +240,14 @@ window.openVideo = function(url) {
 
 // Load Testimonials
 async function loadTestimonials() {
-    const { data, error } = await supabaseClient.from('testimonials').select('*').order('created_at', { ascending: false });
-    if(error || !data || data.length === 0) return; // fallback to static HTML
-
     const wrapper = document.getElementById('testimonials-wrapper');
+    const { data, error } = await supabaseClient.from('testimonials').select('*').order('created_at', { ascending: false });
+    
+    if(error || !data || data.length === 0) {
+        wrapper.innerHTML = '<div class="swiper-slide"><p style="text-align:center; color:var(--text-secondary); width:100%;">No testimonials yet.</p></div>';
+        return;
+    }
+
     wrapper.innerHTML = '';
 
     data.forEach(t => {
@@ -273,4 +282,26 @@ async function loadTestimonials() {
             }
         }
     });
+}
+
+// Load Offers
+async function loadOffers() {
+    const { data, error } = await supabaseClient.from('offers').select('*').eq('status', 'active').order('created_at', { ascending: false }).limit(1);
+    
+    if(error || !data || data.length === 0) return;
+
+    const offer = data[0];
+    const container = document.getElementById('offers-banner-container');
+    
+    container.innerHTML = `
+        <div class="offer-banner" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 3rem 2rem; text-align: center; margin: 0 1rem; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+            ${offer.image_url ? `<img src="${offer.image_url}" style="max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 1.5rem; object-fit: cover;" alt="Special Offer">` : ''}
+            <h2 class="gradient-text-accent" style="margin-bottom: 1rem; font-size: 2.5rem; font-weight: 700;">${offer.title}</h2>
+            <p style="color: var(--text-primary); font-size: 1.2rem; max-width: 800px; margin-bottom: 2rem;">${offer.description}</p>
+            <a href="#contact" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem; border-radius: 50px;">Claim Offer Now</a>
+            <div class="bg-glow" style="width: 300px; height: 300px; top: -150px; right: -150px; opacity: 0.4;"></div>
+            <div class="bg-glow-2" style="width: 200px; height: 200px; bottom: -100px; left: -100px; opacity: 0.3;"></div>
+        </div>
+    `;
+    container.style.display = 'block';
 }

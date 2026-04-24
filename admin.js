@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(targetView === 'services') loadAdminServices();
             if(targetView === 'enquiries') loadAdminEnquiries();
             if(targetView === 'testimonials') loadAdminTestimonials();
+            if(targetView === 'offers') loadAdminOffers();
         });
     });
 
@@ -152,12 +153,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             addVideoModal.classList.add('active');
         });
     }
-
     if(closeAddVideoBtn) {
         closeAddVideoBtn.addEventListener('click', () => {
             addVideoModal.classList.remove('active');
         });
     }
+
+    // Modal Toggles for Service, Testimonial, Offer
+    const modals = [
+        { openBtn: 'open-service-modal-btn', closeBtn: 'close-add-service', modalId: 'add-service-modal' },
+        { openBtn: 'open-test-modal-btn', closeBtn: 'close-add-test', modalId: 'add-test-modal' },
+        { openBtn: 'open-offer-modal-btn', closeBtn: 'close-add-offer', modalId: 'add-offer-modal' }
+    ];
+
+    modals.forEach(m => {
+        const oBtn = document.getElementById(m.openBtn);
+        const cBtn = document.getElementById(m.closeBtn);
+        const modal = document.getElementById(m.modalId);
+        
+        if (oBtn && cBtn && modal) {
+            oBtn.addEventListener('click', () => modal.classList.add('active'));
+            cBtn.addEventListener('click', () => modal.classList.remove('active'));
+        }
+    });
 
     // Google Drive URL Converter
     function convertDriveLink(url) {
@@ -217,6 +235,122 @@ document.addEventListener('DOMContentLoaded', async () => {
             } catch (err) {
                 console.error(err);
                 status.style.color = "#ef4444"; // red
+                status.innerText = `Error: ${err.message}`;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // 7. Add Service Submission
+    const addServiceForm = document.getElementById('add-service-form');
+    if(addServiceForm) {
+        addServiceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('srv-submit-btn');
+            const status = document.getElementById('srv-status');
+            
+            btn.disabled = true;
+            status.style.color = "var(--text-secondary)";
+            status.innerText = "Saving service...";
+
+            try {
+                const { error } = await supabaseClient.from('services').insert([{
+                    title: document.getElementById('srv-title').value,
+                    description: document.getElementById('srv-desc').value,
+                    icon: document.getElementById('srv-icon').value
+                }]);
+                
+                if (error) throw error;
+
+                status.style.color = "#22c55e";
+                status.innerText = "Service Added!";
+                addServiceForm.reset();
+                setTimeout(() => {
+                    document.getElementById('add-service-modal').classList.remove('active');
+                    status.innerText = "";
+                    loadAdminServices();
+                    loadStats();
+                }, 1500);
+            } catch (err) {
+                status.style.color = "#ef4444";
+                status.innerText = `Error: ${err.message}`;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // 8. Add Testimonial Submission
+    const addTestForm = document.getElementById('add-test-form');
+    if(addTestForm) {
+        addTestForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('test-submit-btn');
+            const status = document.getElementById('test-status');
+            
+            btn.disabled = true;
+            status.style.color = "var(--text-secondary)";
+            status.innerText = "Saving testimonial...";
+
+            try {
+                const { error } = await supabaseClient.from('testimonials').insert([{
+                    client_name: document.getElementById('test-name').value,
+                    rating: parseInt(document.getElementById('test-rating').value),
+                    review: document.getElementById('test-review').value
+                }]);
+                
+                if (error) throw error;
+
+                status.style.color = "#22c55e";
+                status.innerText = "Testimonial Added!";
+                addTestForm.reset();
+                setTimeout(() => {
+                    document.getElementById('add-test-modal').classList.remove('active');
+                    status.innerText = "";
+                    loadAdminTestimonials();
+                }, 1500);
+            } catch (err) {
+                status.style.color = "#ef4444";
+                status.innerText = `Error: ${err.message}`;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // 9. Add Offer Submission
+    const addOfferForm = document.getElementById('add-offer-form');
+    if(addOfferForm) {
+        addOfferForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('off-submit-btn');
+            const status = document.getElementById('off-status-msg');
+            
+            btn.disabled = true;
+            status.style.color = "var(--text-secondary)";
+            status.innerText = "Saving offer...";
+
+            try {
+                const { error } = await supabaseClient.from('offers').insert([{
+                    title: document.getElementById('off-title').value,
+                    description: document.getElementById('off-desc').value,
+                    image_url: document.getElementById('off-image').value,
+                    status: document.getElementById('off-status').value
+                }]);
+                
+                if (error) throw error;
+
+                status.style.color = "#22c55e";
+                status.innerText = "Offer Added!";
+                addOfferForm.reset();
+                setTimeout(() => {
+                    document.getElementById('add-offer-modal').classList.remove('active');
+                    status.innerText = "";
+                    loadAdminOffers();
+                }, 1500);
+            } catch (err) {
+                status.style.color = "#ef4444";
                 status.innerText = `Error: ${err.message}`;
             } finally {
                 btn.disabled = false;
@@ -377,5 +511,42 @@ window.deleteTestimonial = async function(id) {
     if(confirm('Delete this testimonial?')) {
         const { error } = await supabaseClient.from('testimonials').delete().eq('id', id);
         if(!error) loadAdminTestimonials();
+    }
+}
+
+// Offers Table Loader
+async function loadAdminOffers() {
+    const tbody = document.querySelector('#admin-offers-table tbody');
+    if(!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+    
+    const { data, error } = await supabaseClient.from('offers').select('*').order('created_at', { ascending: false });
+    
+    if(error || !data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No offers found</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = '';
+    data.forEach(o => {
+        const statusColor = o.status === 'active' ? '#22c55e' : '#ef4444';
+        tbody.innerHTML += `
+            <tr>
+                <td>${o.image_url ? `<img src="${o.image_url}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 4px;">` : 'No Image'}</td>
+                <td>${o.title}</td>
+                <td style="max-width: 250px;">${o.description}</td>
+                <td><span style="color:${statusColor}; border: 1px solid ${statusColor}; padding: 0.2rem 0.5rem; border-radius: 4px;">${o.status.toUpperCase()}</span></td>
+                <td>
+                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; color: #ef4444; border-color: #ef4444;" onclick="deleteOffer(${o.id})">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+window.deleteOffer = async function(id) {
+    if(confirm('Delete this offer?')) {
+        const { error } = await supabaseClient.from('offers').delete().eq('id', id);
+        if(!error) loadAdminOffers();
     }
 }

@@ -41,6 +41,11 @@
         <a href="#contact" class="btn btn-primary">Let's Talk</a>
     </nav>
 
+    <!-- Dynamic Offers Banner -->
+    <div id="offers-banner-container" style="display: none; padding-top: 80px; width: 100%; max-width: 1200px; margin: 0 auto;">
+        <!-- Banner injected via script.js -->
+    </div>
+
     <!-- Hero Section -->
     <section id="home" class="hero">
         <h1 data-aos="fade-up" data-aos-duration="1000">
@@ -78,28 +83,7 @@
         <h2 class="section-title" data-aos="fade-up">Our Premium <span class="gradient-text-accent">Services</span></h2>
         
         <div class="services-grid" id="services-grid">
-            <!-- Services dynamically loaded from Supabase via script.js -->
-            <!-- Fallback static content for preview -->
-            <div class="service-card" data-aos="fade-up">
-                <i class='bx bx-trending-up service-icon'></i>
-                <h3>Digital Marketing</h3>
-                <p>SEO Optimization, Google Ads, Meta Ads, and Social Media Marketing.</p>
-            </div>
-            <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                <i class='bx bx-brain service-icon'></i>
-                <h3>AI / ML Development</h3>
-                <p>Prediction Systems, Chatbots, Automation Tools, and Data Dashboards.</p>
-            </div>
-            <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                <i class='bx bx-code-alt service-icon'></i>
-                <h3>Website Development</h3>
-                <p>Static & Dynamic Websites, E-commerce, built for conversion.</p>
-            </div>
-            <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                <i class='bx bx-video service-icon'></i>
-                <h3>Video Editing</h3>
-                <p>YouTube Edits, Instagram Reels, Ads Creation.</p>
-            </div>
+            <p style="text-align:center; width:100%; color:var(--text-secondary);">Loading premium services...</p>
         </div>
     </section>
 
@@ -139,13 +123,8 @@
         <!-- Swiper -->
         <div class="swiper mySwiper" data-aos="fade-up">
             <div class="swiper-wrapper" id="testimonials-wrapper">
-                <!-- Testimonials loaded from Supabase -->
                 <div class="swiper-slide">
-                    <div class="testimonial-card">
-                        <div class="stars">★★★★★</div>
-                        <p>"NexusAI completely transformed our online presence. The video editing and marketing strategies brought in 3x more leads!"</p>
-                        <h4 style="margin-top: 1rem;" class="gradient-text-accent">- Sarah Jenkins, CEO</h4>
-                    </div>
+                    <p style="text-align:center; color:var(--text-secondary); width:100%;">Loading client stories...</p>
                 </div>
             </div>
             <div class="swiper-pagination"></div>
