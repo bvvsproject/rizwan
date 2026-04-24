@@ -159,6 +159,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Toggle Video Source
+    const sourceRadios = document.querySelectorAll('input[name="vid-source"]');
+    if(sourceRadios.length > 0) {
+        sourceRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if(e.target.value === 'youtube') {
+                    document.getElementById('vid-file-group').style.display = 'none';
+                    document.getElementById('vid-file').required = false;
+                    document.getElementById('vid-url-group').style.display = 'block';
+                    document.getElementById('vid-youtube-url').required = true;
+                } else {
+                    document.getElementById('vid-file-group').style.display = 'block';
+                    document.getElementById('vid-file').required = true;
+                    document.getElementById('vid-url-group').style.display = 'none';
+                    document.getElementById('vid-youtube-url').required = false;
+                }
+            });
+        });
+    }
+
     // 6. Upload Form Submission
     const uploadForm = document.getElementById('upload-video-form');
     if(uploadForm) {
@@ -170,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const title = document.getElementById('vid-title').value;
             const category = document.getElementById('vid-category').value;
             const description = document.getElementById('vid-desc').value;
-            const videoFile = document.getElementById('vid-file').files[0];
+            const source = document.querySelector('input[name="vid-source"]:checked').value;
             const thumbFile = document.getElementById('vid-thumb').files[0];
 
             btn.disabled = true;
@@ -188,24 +208,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const { data: thumbUrlData } = supabaseClient.storage.from('thumbnails').getPublicUrl(thumbName);
 
                 // Upload Video
-                status.innerText = "Uploading video... (this may take a while)";
-                const vidExt = videoFile.name.split('.').pop();
-                const vidName = `${Date.now()}_video.${vidExt}`;
-                const { data: vidData, error: vidError } = await supabaseClient.storage
-                    .from('videos')
-                    .upload(vidName, videoFile);
-                if (vidError) throw vidError;
-                const { data: vidUrlData } = supabaseClient.storage.from('videos').getPublicUrl(vidName);
+                let finalVideoUrl = "";
+                
+                if (source === 'upload') {
+                    const videoFile = document.getElementById('vid-file').files[0];
+                    status.innerText = "Uploading video... (this may take a while)";
+                    const vidExt = videoFile.name.split('.').pop();
+                    const vidName = `${Date.now()}_video.${vidExt}`;
+                    const { data: vidData, error: vidError } = await supabaseClient.storage
+                        .from('videos')
+                        .upload(vidName, videoFile);
+                    if (vidError) throw vidError;
+                    const { data: vidUrlData } = supabaseClient.storage.from('videos').getPublicUrl(vidName);
+                    finalVideoUrl = vidUrlData.publicUrl;
+                } else {
+                    finalVideoUrl = document.getElementById('vid-youtube-url').value;
+                    status.innerText = "Saving to database...";
+                }
 
                 // Save to Database
                 status.innerText = "Saving to database...";
-                const { error: dbError } = await supabase
+                const { error: dbError } = await supabaseClient
                     .from('videos')
                     .insert([{
                         title,
                         category,
                         description,
-                        video_url: vidUrlData.publicUrl,
+                        video_url: finalVideoUrl,
                         thumbnail_url: thumbUrlData.publicUrl
                     }]);
                 
